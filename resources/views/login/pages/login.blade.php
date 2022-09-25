@@ -9,14 +9,15 @@
         padding-top: 20px;
         padding-bottom: 20px;
         color: azure;
-        background-color: rgb(91, 20, 184);
+        background-color: rgb(114, 89, 225);
     }
 
     .container {
         margin-top: 20px;
     }
 
-    .card-login, .card-register {
+    .card-login,
+    .card-register {
         width: 40rem;
     }
 
@@ -28,7 +29,7 @@
         font-size: 18px;
     }
 
-    .button-main-login {
+    .btn-main-login {
         background-color: rgb(125, 93, 166);
         border: none;
         color: white;
@@ -61,23 +62,22 @@
                 ล็อคอิน
             </div>
             <div class="card-body">
-
-                <form action="" method="post" id="form-login">
+                <form method="post" id="form-login">
                     {{ csrf_field() }}
                     @method('POST')
+
                     <div class="input-group mb-3">
                         <span class="input-group-text">ชื่อผู้ใช้</span>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+                        <input type="text" class="form-control" id="username" name="username" placeholder="username" maxlength="10">
                     </div>
 
                     <div class="input-group mb-3">
                         <span class="input-group-text">รหัสผ่าน</span>
-                        <input type="text" class="form-control" id="password" name="password" placeholder="Password">
+                        <input type="text" class="form-control" id="password" name="password" placeholder="password" maxlength="10">
                     </div>
 
-                    <button type="submit" class="button-main-login btn-login btn-sm w-100">เข้าสู่ระบบ</button>
+                    <button type="submit" class="btn-main-login btn-login btn-sm w-100">เข้าสู่ระบบ</button>
                 </form>
-
             </div>
         </div>
     </div>
@@ -85,7 +85,7 @@
     <div class="d-flex justify-content-center mt-4">
         <div class="card card-register shadow rounded">
             <div class="card-body">
-            ละทะเบียน
+                ยังไม่ได้เป็นสมาชิกหรือไม่ <a href="{{ url('/register/pages/userRegister') }}" class="text-decoration-none">ละทะเบียน</a>
             </div>
         </div>
     </div>
@@ -95,14 +95,62 @@
 @include('login.layout.footer')
 
 <script>
-
-    $(document).ready(function () {
-        $('#form-login').submit(function (e) { 
+    $(document).ready(function() {
+        $('#form-login').submit(function(e) {
             e.preventDefault();
-            
-            
 
+            let username = $('#username').val();
+            let password = $('#password').val();
+
+            if (username !== '' && password !== '') {
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "{{ url('/') }}",
+                    data: {
+                        _token: $("input[name='_token']").val(),
+                        username: username,
+                        password: password
+                    },
+                    success: function(response) {
+                        if (response.status == 200) {
+
+                            Swal.fire(
+                                'สำเร็จ',
+                                'เข้าสู่ระบบสำเร็จ',
+                                'success'
+                            ).then((result) => {
+                                console.log(response);
+                            });
+
+                        } else {
+
+                            Swal.fire(
+                                'ผิดพลาด',
+                                'เข้าสู่ระบบไม่สำเร็จ',
+                                'error'
+                            ).then((result) => {
+                                $(this)[0].reset();
+                                $('#username').focus();
+                            });
+
+                        }
+                    }
+                });
+
+            } else {
+
+                Swal.fire(
+                    'เเจ้งเตือน',
+                    'กรุณากรอกข้อมูลให้ครบ',
+                    'warning'
+                ).then((result) => {
+                    $(this)[0].reset();
+                    $('#username').focus();
+                });
+
+            }
         });
     });
-
 </script>
