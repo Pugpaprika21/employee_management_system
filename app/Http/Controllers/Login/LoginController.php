@@ -15,11 +15,8 @@ class LoginController extends Controller
      */
     public function login(Request $request): object
     {
-        $username = htmlspecialchars(strip_tags($request->username));
-        $password = htmlspecialchars(strip_tags($request->password));
-
-        $queryLogin = RegisterModel::where('username', $username)
-            ->where('password', $password)
+        $queryLogin = RegisterModel::where('username', $request->username)
+            ->where('password', $request->password)
             ->where(fn (object $query): object => $query->orWhere('role', 'admin'))
             ->get();
 
@@ -27,8 +24,8 @@ class LoginController extends Controller
 
             return response()->json([
                 'status' => ResponseStatus::OK->value,
-                'username' => $username,
-                'password' => $password
+                'username' => $request->username,
+                'password' => $request->password
             ]);
         }
 
