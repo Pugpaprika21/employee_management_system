@@ -15,12 +15,12 @@ class LoginController extends Controller
      */
     public function login(Request $request): object
     {
-        $queryLogin = RegisterModel::where('username', $request->username)
+        $query = RegisterModel::where('username', $request->username)
             ->where('password', $request->password)
             ->where(fn (object $query): object => $query->orWhere('role', 'admin'))
             ->get();
 
-        if ($queryLogin) {
+        if ($query) {
 
             return response()->json([
                 'status' => ResponseStatus::OK->value,
