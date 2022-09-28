@@ -23,16 +23,16 @@ class LoginController extends Controller
             ->where(fn (object $query): object => $query->orWhere('role', 'admin'))
             ->get();
 
-        if ($query) {
+        $validate = $this->validationLogin($username, $password)->auth();
 
-            if ($this->validationLogin($username, $password)->auth()) {
+        if ($query->count() !== 0 && $validate !== false) {
 
-                return response()->json([
-                    'status' => ResponseStatus::OK->value,
-                    'username' => $username,
-                    'password' => $password
-                ]);
-            }
+            return response()->json([
+                'status' => ResponseStatus::OK->value,
+                'username' => $username,
+                'password' => $password
+            ]);
+            
         }
 
         return response()->json([

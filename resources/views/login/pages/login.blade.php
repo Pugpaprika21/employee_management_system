@@ -55,7 +55,7 @@
 
 @include('login.layout.navbar')
 
-<div class="container">
+<div class="container" id="login-vue">
     <div class="d-flex justify-content-center">
         <div class="card card-login shadow rounded">
             <div class="card-header card-login-header">
